@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .form-field {
+    @apply my-[18px] mx-auto;
+  }
+  .error {
+    @apply font-bold text-xs text-red-600 p-1;
+  }
+  .percent {
+    @apply h-full absolute box-border;
+  }
+}
