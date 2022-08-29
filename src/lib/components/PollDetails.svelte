@@ -1,15 +1,29 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import pollsStore from '../stores/PollStore';
+  import Button from './common/Button.svelte';
   import Card from './common/Card.svelte';
   export let poll;
-  const dispatch = createEventDispatcher();
 
   $: totalVotes = poll.votesA + poll.votesB;
   $: percentA = Math.floor((100 / totalVotes) * poll.votesA);
   $: percentB = Math.floor((100 / totalVotes) * poll.votesB);
 
   const voteHandler = (option, id) => () => {
-    dispatch('vote', { option, id });
+    let copiedPolls = [...$pollsStore];
+    let upVotedPoll = copiedPolls.find((poll) => poll.id === id);
+
+    if (option === 'a') {
+      upVotedPoll.votesA++;
+    }
+    if (option === 'b') {
+      upVotedPoll.votesB++;
+    }
+
+    $pollsStore = copiedPolls;
+  };
+
+  const deleteHandler = (id) => () => {
+    $pollsStore = $pollsStore.filter((currentPoll) => currentPoll.id != id);
   };
 </script>
 
@@ -21,7 +35,10 @@
       class="bg-neutral-100 cursor-pointer my-[10px] mx-auto relative hover:opacity-60"
       on:click={voteHandler('a', poll.id)}
     >
-      <div class="percent border-l-4 border-green-500 bg-green-500/20" style="width: {percentA}%;" />
+      <div
+        class="percent border-l-4 border-green-500 bg-green-500/20"
+        style="width: {percentA}%;"
+      />
       <span class="inline-block py-[10px] px-5">{poll.answerA} ({poll.votesA})</span>
     </div>
     <div
@@ -30,6 +47,9 @@
     >
       <div class="percent border-l-4 border-red-500 bg-red-500/20" style="width: {percentB}%;" />
       <span class="inline-block py-[10px] px-5">{poll.answerB} ({poll.votesB})</span>
+    </div>
+    <div class="mt-[30px] text-center">
+      <Button flat={false} on:click={deleteHandler(poll.id)}>Delete</Button>
     </div>
   </div>
 </Card>

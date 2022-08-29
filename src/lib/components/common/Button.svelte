@@ -10,7 +10,8 @@
   {type === 'primary' ? 'bg-orange-600 ' : 'bg-emerald-500'} 
   {type === 'secondary' && inverse ? 'text-emerald-500 bg-white border-2 border-emerald-500' : ''}
   {type === 'primary' && inverse ? 'text-orange-600 bg-white border-2 border-orange-600' : ''}
-"
+  {!flat ? 'active:bg-gray-300' : ''}"
+  on:click
 >
   <slot />
 </button>

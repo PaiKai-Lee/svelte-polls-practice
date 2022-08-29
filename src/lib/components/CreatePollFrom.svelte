@@ -1,9 +1,11 @@
 <script>
   import { v4 as uuidv4 } from 'uuid';
+  import pollsStore from '../stores/PollStore';
   import { createEventDispatcher } from 'svelte';
   import Button from './common/Button.svelte';
 
   const disptach = createEventDispatcher();
+
   let fields = { question: '', answerA: '', answerB: '' };
   let errors = { question: '', answerA: '', answerB: '' };
   // let valid = false;
@@ -29,7 +31,8 @@
     }
     if (valid) {
       const poll = { ...fields, votesA: 0, votesB: 0, id: uuidv4() };
-      disptach('add', poll);
+      $pollsStore = [poll, ...$pollsStore];
+      disptach('add')
       fields.question = '';
       fields.answerA = '';
       fields.answerB = '';
