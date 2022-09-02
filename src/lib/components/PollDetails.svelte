@@ -1,12 +1,19 @@
 <script>
+  import { tweened } from 'svelte/motion';
   import pollsStore from '../stores/PollStore';
   import Button from './common/Button.svelte';
   import Card from './common/Card.svelte';
   export let poll;
 
   $: totalVotes = poll.votesA + poll.votesB;
-  $: percentA = Math.floor((100 / totalVotes) * poll.votesA);
-  $: percentB = Math.floor((100 / totalVotes) * poll.votesB);
+  $: percentA = Math.floor((100 / totalVotes) * poll.votesA) || 0;
+  $: percentB = Math.floor((100 / totalVotes) * poll.votesB) || 0;
+
+  // tweened percentages
+  const tweenedA = tweened(0);
+  const tweenedB = tweened(0);
+  $: tweenedA.set(percentA);
+  $: tweenedB.set(percentB);
 
   const voteHandler = (option, id) => () => {
     let copiedPolls = [...$pollsStore];
@@ -37,7 +44,7 @@
     >
       <div
         class="percent border-l-4 border-green-500 bg-green-500/20"
-        style="width: {percentA}%;"
+        style="width: {$tweenedA}%;"
       />
       <span class="inline-block py-[10px] px-5">{poll.answerA} ({poll.votesA})</span>
     </div>
@@ -45,7 +52,7 @@
       class="bg-neutral-100 cursor-pointer my-[10px] mx-auto relative hover:opacity-60"
       on:click={voteHandler('b', poll.id)}
     >
-      <div class="percent border-l-4 border-red-500 bg-red-500/20" style="width: {percentB}%;" />
+      <div class="percent border-l-4 border-red-500 bg-red-500/20" style="width: {$tweenedB}%;" />
       <span class="inline-block py-[10px] px-5">{poll.answerB} ({poll.votesB})</span>
     </div>
     <div class="mt-[30px] text-center">
